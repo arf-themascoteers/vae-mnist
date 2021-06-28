@@ -6,7 +6,7 @@ class Encoder(nn.Module):
         self.fc1 = nn.Linear(28 * 28, 128)
         self.fc2 = nn.Linear(128, 64)
         self.mean = nn.Linear(64, 32)
-        self.var = nn.Linear(64, 32)
+        self.log_var = nn.Linear(64, 32)
         self.lrelu = nn.LeakyReLU(0.2)
 
     def forward(self, x):
@@ -15,6 +15,6 @@ class Encoder(nn.Module):
         x = self.fc2(x)
         x = self.lrelu(x)
         mean = self.mean(x)
-        var = self.var(x)
+        var = self.log_var(x)
         return mean, var
 

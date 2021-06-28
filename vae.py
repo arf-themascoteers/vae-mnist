@@ -1,27 +1,22 @@
 import torch.nn as nn
+import torch
+from decoder import Decoder
+from encoder import Encoder
+
 
 class VAELinear(nn.Module):
     def __init__(self):
         super(VAELinear, self).__init__()
-        self.encoder = nn.Sequential(
-            nn.Linear(28 * 28, 128),
-            nn.ReLU(),
-            nn.Linear(128, 64),
-            nn.ReLU(),
-            nn.Linear(64, 4)
-        )
-
-        self.decoder = nn.Sequential(
-            nn.Linear(4, 64),
-            nn.ReLU(),
-            nn.Linear(64, 128),
-            nn.ReLU(),
-            nn.Linear(128, 28 * 28),
-            nn.Sigmoid()
-        )
-
+        self.encoder = Encoder()
+        self.decoder = Decoder()
 
     def forward(self, x):
-        encoded = self.encoder(x)
-        decoded = self.decoder(encoded)
-        return decoded
+        mean, log_var = self.encoder(x)
+        z = self.reparameterization(mean, log_var)
+        decoded = self.decoder(z)
+        return decoded, mean, log_var
+
+    def reparameterization(self, mean, var):
+        epsilon = torch.randn_like(var)
+        z = mean + var*epsilon
+        return z
