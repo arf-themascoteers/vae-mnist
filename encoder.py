@@ -5,8 +5,8 @@ class Encoder(nn.Module):
         super(Encoder, self).__init__()
         self.fc1 = nn.Linear(28 * 28, 128)
         self.fc2 = nn.Linear(128, 64)
-        self.mean = nn.Linear(64, 32)
-        self.log_var = nn.Linear(64, 32)
+        self.mean = nn.Linear(64, 2)
+        self.log_var = nn.Linear(64, 2)
         self.lrelu = nn.LeakyReLU(0.2)
 
     def forward(self, x):

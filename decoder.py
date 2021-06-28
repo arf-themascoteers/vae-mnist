@@ -4,7 +4,7 @@ import torch
 class Decoder(nn.Module):
     def __init__(self):
         super(Decoder, self).__init__()
-        self.fc1 = nn.Linear(32, 64)
+        self.fc1 = nn.Linear(2, 64)
         self.fc2 = nn.Linear(64, 128)
         self.fc3 = nn.Linear(128, 28*28)
         self.lrelu = nn.LeakyReLU(0.2)
