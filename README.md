@@ -1,5 +1,3 @@
-** RUN **
-
 train.py: To train the machine
 
 test.py: To test mimic
