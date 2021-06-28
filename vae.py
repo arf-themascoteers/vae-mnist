@@ -13,7 +13,6 @@ class VAELinear(nn.Module):
     def forward(self, x):
         mean, log_var = self.encoder(x)
         z = self.reparameterization(mean, log_var)
-        print(z)
         decoded = self.decoder(z)
         return decoded, mean, log_var
 
