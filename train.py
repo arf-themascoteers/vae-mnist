@@ -2,7 +2,8 @@ import torch
 from torchvision import datasets, transforms
 import vae
 import torch.nn.functional as F
-
+from torch.utils.tensorboard import SummaryWriter
+import torchvision
 
 def calculate_loss(x, decoded, mean, log_var):
     reproduction_loss = F.binary_cross_entropy(decoded, x, reduction='sum')
@@ -19,20 +20,30 @@ data_loader = torch.utils.data.DataLoader(dataset=mnist_data,
 model = vae.VAELinear()
 model.train()
 optimizer = torch.optim.Adam(model.parameters(), lr=1e-3, weight_decay=1e-5)
-
+writer = SummaryWriter()
 num_epochs = 10
 outputs = []
 for epoch in range(num_epochs):
-    overall_loss = 0
-    count = len(data_loader)
-    for (img, _) in data_loader:
-        img = img.reshape(-1, 28*28)
+    first = True
+    for (img_original, _) in data_loader:
+        img = img_original.reshape(-1, 28*28)
         decoded_image, mean, log_var = model(img)
         loss = calculate_loss(img, decoded_image, mean, log_var)
-        overall_loss += loss.item()
+
+        if first:
+            writer.add_scalar("Loss/train", loss, epoch)
+            sample_generated_images = decoded_image.reshape(-1,1,28, 28)
+            grid = torchvision.utils.make_grid(img_original[0:5])
+            writer.add_image(f"{epoch} - Original", grid)
+            grid = torchvision.utils.make_grid(sample_generated_images[0:5])
+            writer.add_image(f"{epoch} - Generated", grid)
+            writer.flush()
+            first = False
+
         optimizer.zero_grad()
         loss.backward()
         optimizer.step()
-    print(f'Epoch:{epoch + 1}, Loss:{overall_loss/count:.4f}')
+    print(f"End of epoch {epoch}")
 
 torch.save(model.state_dict(), 'models/vae.h5')
+writer.close()
