@@ -16,3 +16,6 @@ def sampling():
             generated_image = generated_image[0].reshape(28, 28)
             plt.imshow(generated_image)
             plt.show()
+
+if __name__ == "__main__":
+    sampling()
