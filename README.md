@@ -1,5 +1,7 @@
-train.py: To train the machine
+**Install**
 
-test.py: To test mimic
+pip install -r requirements.txt
 
-sampling.py: To generate digit
+**Run**
+
+Run main.py
